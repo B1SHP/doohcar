@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: dooh-car
+weather:
+  api:
+    key: d59df807c8744d8ebe2181111242804
