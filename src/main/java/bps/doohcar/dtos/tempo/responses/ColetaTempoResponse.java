@@ -27,7 +27,7 @@ public class ColetaTempoResponse extends ResponseObject {
 
     }
 
-    public static ResponseEntity<ResponseObject> success(String cidade, TemperaturaDto temperaturaDto){
+    public static ResponseEntity<Object> success(String cidade, TemperaturaDto temperaturaDto){
 
         return ResponseEntity
             .status(HttpStatus.OK)

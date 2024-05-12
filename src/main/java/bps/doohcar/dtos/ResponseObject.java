@@ -24,7 +24,7 @@ public class ResponseObject {
     @JsonProperty("success") private String success;
     @JsonProperty("error") private String error;
 
-    public static ResponseEntity<ResponseObject> error(String error, HttpStatus httpStatus){
+    public static ResponseEntity<Object> error(String error, HttpStatus httpStatus){
 
         return ResponseEntity
             .status(httpStatus)
@@ -33,7 +33,7 @@ public class ResponseObject {
 
     }
 
-    public static ResponseEntity<ResponseObject> success(String success, HttpStatus httpStatus){
+    public static ResponseEntity<Object> success(String success, HttpStatus httpStatus){
 
         return ResponseEntity
             .status(httpStatus)

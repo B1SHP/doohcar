@@ -31,7 +31,7 @@ public class TempoController {
     private static final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping("/coleta")
-    public ResponseEntity<ResponseObject> coleta(@RequestBody ColetaTempoRequest request){
+    public ResponseEntity<Object> coleta(@RequestBody ColetaTempoRequest request){
 
         String url = String.format(
             urlWeatherApi + "&key=%s&q=%s,%s", 

@@ -1,4 +1,4 @@
-package bps.doohcar.dtos.tempo.requests;
+package bps.doohcar.dtos.locais.requests;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +9,9 @@ import bps.doohcar.dtos.ResponseObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-    name = "coleta_tempo_request"
+    name = "coleta_restaurantes_request"
 )
-public record ColetaTempoRequest(
+public record ColetaRestaurantesRequest(
 
     @Schema(
         nullable = false
@@ -27,25 +27,21 @@ public record ColetaTempoRequest(
 
     public ResponseEntity<Object> validate(){
 
+        String message = null;
+
         if(latitude == null){
 
-            return ResponseObject.error(
-                "A variavel 'latitude' não pode ser null", 
-                HttpStatus.BAD_REQUEST
-            );
+            message = "A variavel 'latitude' não pode ser null";
 
         }
 
         if(longitude == null){
 
-            return ResponseObject.error(
-                "A variavel 'longitude' não pode ser null", 
-                HttpStatus.BAD_REQUEST
-            );
+            message = "A variavel 'longitude' não pode ser null";
 
         }
 
-        return null;
+        return message == null ? null : ResponseObject.error(message, HttpStatus.BAD_REQUEST);
 
     }
 
