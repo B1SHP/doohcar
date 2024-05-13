@@ -11,35 +11,35 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import bps.doohcar.dtos.weatherapi.TempoDto;
-
+import bps.doohcar.dtos.locais.responses.Local;
 @Repository
-public class TempoRepository {
+public class LocalRepository {
 
     @Autowired
-    @Qualifier("tempo")
+    @Qualifier("local")
     private RedisTemplate<String, String> redisTemplate;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public void createCache(String chave, TempoDto tempoDto) throws JsonProcessingException{
+    public void createCache(String chave, Local local) throws JsonProcessingException{
 
         redisTemplate
             .opsForValue()
             .set(
                 chave, 
-                objectMapper.writeValueAsString(tempoDto), Duration.ofSeconds(86400)
+                objectMapper.writeValueAsString(local), Duration.ofSeconds(1296000)
             )
         ;
 
     }
 
-    public TempoDto collectCache(String chave) throws JsonMappingException, JsonProcessingException{
+    public Local collectCache(String chave) throws JsonMappingException, JsonProcessingException{
 
         String valor = redisTemplate.opsForValue().get(chave);
 
-        return valor == null ? null : objectMapper.readValue(valor, TempoDto.class);
+        return valor == null ? null : objectMapper.readValue(valor, Local.class);
 
     }
+ 
     
 }

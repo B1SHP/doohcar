@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record Hours(
 
-    @JsonProperty("periods") List<Period> periods
+    @JsonProperty("periods") List<Period> periods,
+    @JsonProperty("weekday_text") List<String> weekdayText
 
 ) {}
