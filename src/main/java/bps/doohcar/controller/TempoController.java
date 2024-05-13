@@ -93,7 +93,7 @@ public class TempoController {
 
             Address address = restTemplate.getForObject(String.format(urlNominatim, request.latitude(), request.longitude()), Address.class);
 
-            TempoDto tempoDto = null;
+            TempoDto tempoDto = tempoRespository.collectCache(address.displayName());
 
             if(tempoDto == null){
 
