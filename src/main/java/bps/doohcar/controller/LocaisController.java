@@ -1,7 +1,7 @@
 package bps.doohcar.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,29 +9,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import bps.doohcar.dtos.ResponseObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import bps.doohcar.dtos.locais.responses.Dia;
+
+import bps.doohcar.dtos.locais.responses.ColetaLocaisResponse;
+
+import bps.doohcar.dtos.locais.responses.Local;
+import bps.doohcar.dtos.locais.responses.Nota;
 import bps.doohcar.dtos.locais.DataLocation;
 import bps.doohcar.dtos.locais.DataPhotos;
 import bps.doohcar.dtos.locais.Location;
 import bps.doohcar.dtos.locais.requests.ColetaRestaurantesRequest;
 import bps.doohcar.dtos.tripadvisorapi.DetailDto;
+import bps.doohcar.repositories.redis.LocalRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
+import bps.doohcar.dtos.locais.Image;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/dooh-car/locais")
+@RequestMapping("/api/v1/dooh-car/local")
+@Tag(
+    name = "APIs DOOH-CAR: LOCAIS",
+    description = "CONTÉM TODOS OS ENDPOINTS RELACIONADOS AOS LOCAIS"
+)
 public class LocaisController {
-
-    private String locationUrl = "https://api.content.tripadvisor.com/api/v1/location/search?searchQuery=restaurantes&category=restaurants&radiusUnit=km&language=pt";
-
-    private String detailsUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/details?language=pt&currency=BRL&key=%s";
-
-    private String photosUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/photos?language=pt&limit=5&offset=0&source=Management&key=%s";
 
     @Value("${trip-advisor.api.key}")
     private String key;
 
-    @GetMapping("/restaurantes")
+    @Autowired
+    private LocalRepository localRepository;
+
+    private String locationUrl = "https://api.content.tripadvisor.com/api/v1/location/search?searchQuery=%s&category=%s&radiusUnit=km&language=pt&radius=1000";
+    private String detailsUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/details?language=pt&currency=BRL&key=%s";
+    private String photosUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/photos?language=pt&limit=5&offset=0&source=Management&key=%s";
+ 
+    @GetMapping("/coleta")
     public ResponseEntity<Object> coletaRestaurantes(@RequestBody ColetaRestaurantesRequest request){
 
         ResponseEntity<Object> validate = request.validate();
@@ -42,28 +60,111 @@ public class LocaisController {
 
         }
 
-        ResponseEntity<DataLocation> data = chamadaLocation(locationUrl, DataLocation.class, 
+        ResponseEntity<DataLocation> data = chamadaLocation(String.format(locationUrl, request.query(), request.tipo()), DataLocation.class, 
             "key", key,
             "latLong", (request.latitude() + "," + request.longitude())
         );
 
+        List<Local> locais = new ArrayList<>();
 
-        Location location = data.getBody().locations().getFirst();
+        for(Location location : data.getBody().locations()){
 
-        String url = String.format(detailsUrl, location.locationId(), key);
+            Local local = null;
 
-//                ResponseEntity<DetailDto> detail = new RestTemplate().getForEntity(url, DetailDto.class);
+            try {
 
-        url = String.format(photosUrl, location.locationId(), key);
+				local = localRepository.collectCache(location.locationId());
 
-        System.out.println(url);
+			} catch (JsonProcessingException e) {
 
-        ResponseEntity<DataPhotos> dataPhotos = new RestTemplate().getForEntity(url, DataPhotos.class);
+                System.out.println("Erro ao coletar a cache");
 
-        System.out.println("Data: " + dataPhotos.getBody().toString());
+			}
 
+            if(local == null){
 
-        return ResponseObject.success(data.getBody().toString(), HttpStatus.OK);
+                ResponseEntity<DetailDto> responseEntityDetail = new RestTemplate().getForEntity(
+                    String.format(detailsUrl, location.locationId(), key), 
+                    DetailDto.class
+                );
+
+                ResponseEntity<DataPhotos> responseEntityDataPhotos = new RestTemplate().getForEntity(
+                    String.format(photosUrl, location.locationId(), key), 
+                    DataPhotos.class
+                );
+
+                DetailDto detail = responseEntityDetail.getBody();
+                DataPhotos dataPhotos = responseEntityDataPhotos.getBody();
+
+                ArrayList<Dia> dias = new ArrayList<>();
+
+                if(detail.hours() != null){
+
+                    detail.hours().periods().forEach(
+                        period -> {
+                            dias.add(
+                                new Dia(period.open().day(), period.open().time(), period.close().time())
+                            );
+                        }
+                    );    
+
+                }
+
+                ArrayList<Image> fotos = new ArrayList<>();
+
+                dataPhotos.imageObject().forEach(
+                    image -> {
+                        fotos.add(image.image());
+                    }
+                );
+
+                Nota nota = null;
+
+                if(detail.subRating() != null){
+
+                    nota = new Nota(
+                        detail.rating(), 
+                        detail.subRating().comida().value(), 
+                        detail.subRating().atendimento().value(), 
+                        detail.subRating().preco().value()
+                    );
+
+                } else {
+
+                    nota = new Nota(detail.rating(), null, null, null);
+
+                }
+
+                local = new Local(
+                    location.locationId(), 
+                    detail.name(), 
+                    detail.webUrl(), 
+                    detail.phone(), 
+                    detail.numReviews(),
+                    nota, 
+                    dias, 
+                    fotos
+                );
+
+                try {
+
+					localRepository.createCache(location.locationId(), local);
+
+				} catch (JsonProcessingException e) {
+
+                    System.out.println("Erro ao criar cacher");
+
+				}
+
+                System.out.println("No cache which is sad asf");
+
+            } else {System.out.println("Cache yo");}
+
+            locais.add(local);
+
+        }
+
+        return ColetaLocaisResponse.success(locais);
 
     }
     

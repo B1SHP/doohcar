@@ -21,9 +21,31 @@ public record ColetaRestaurantesRequest(
     @Schema(
         nullable = false
     )
-    @JsonProperty("longitude") Double longitude
+    @JsonProperty("longitude") Double longitude,
+    
+    @Schema(
+        nullable = false,
+        description = "1: Restaurantes, 2: Atrações"
+    )
+    @JsonProperty("tipo_lugar") Integer tipoLugar,
+
+    @Schema(
+        nullable = false,
+        example = "Festas"
+    )
+    @JsonProperty("query") String query
 
 ) {
+
+    public String tipo(){
+
+        return switch(tipoLugar){
+            case 1 -> "restaurants";
+            case 2 -> "attractions";
+            default -> null;
+        };
+
+    }
 
     public ResponseEntity<Object> validate(){
 
@@ -38,6 +60,18 @@ public record ColetaRestaurantesRequest(
         if(longitude == null){
 
             message = "A variavel 'longitude' não pode ser null";
+
+        }
+
+        if(tipoLugar == null){
+
+            message = "A variavel 'tipo_lugar' não pode ser null";
+
+        }
+
+        if(query == null){
+
+            message = "A variavel 'query' não pode ser null";
 
         }
 

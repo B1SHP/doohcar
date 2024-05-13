@@ -16,12 +16,12 @@ public record ColetaTempoRequest(
     @Schema(
         nullable = false
     )
-    @JsonProperty("latitude") Double latitude,
+    @JsonProperty("latitude") String latitude,
 
     @Schema(
         nullable = false
     )
-    @JsonProperty("longitude") Double longitude
+    @JsonProperty("longitude") String longitude
 
 ) {
 

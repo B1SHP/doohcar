@@ -12,16 +12,25 @@ public class WorkingHours {
     @JsonProperty("day") private int day;
     @JsonProperty("time") private String time;
 
-    public String time(){
+    public String day(){
 
-        return time.substring(0, 1) + ":" + time.substring(2);
+        return switch(day){
+
+            case 1 -> "Segunda-Feira";
+            case 2 -> "Terça-Feira";
+            case 3 -> "Quarta-Feira";
+            case 4 -> "Quinta-Feira";
+            case 5 -> "Sexta-Feira";
+            case 6 -> "Sabado";
+            case 7 -> "Domingo";
+            default -> null;
+
+        };
 
     }
 
-    public int day(){
-
-        return day;
-
+    public String time(){
+        return time.substring(0, 2) + ":" + time.substring(2);
     }
     
 }

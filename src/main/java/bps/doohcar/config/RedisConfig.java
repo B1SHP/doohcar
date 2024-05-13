@@ -33,7 +33,7 @@ public class RedisConfig {
         );
     }
 
-    @Bean(name = "locais")
+    @Bean(name = "local")
     public RedisTemplate<String, String> redisTemplateDb1() {
         return new StringRedisTemplate(
             databaseConnection(1)
