@@ -1,5 +1,10 @@
 package bps.doohcar.controller;
 
+import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -11,25 +16,23 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import bps.doohcar.dtos.locais.responses.Dia;
-
-import bps.doohcar.dtos.locais.responses.ColetaLocaisResponse;
-
-import bps.doohcar.dtos.locais.responses.Local;
-import bps.doohcar.dtos.locais.responses.Nota;
+import bps.doohcar.dtos.ResponseObject;
 import bps.doohcar.dtos.locais.DataLocation;
 import bps.doohcar.dtos.locais.DataPhotos;
+import bps.doohcar.dtos.locais.Image;
 import bps.doohcar.dtos.locais.Location;
 import bps.doohcar.dtos.locais.requests.ColetaRestaurantesRequest;
+import bps.doohcar.dtos.locais.responses.ColetaLocaisResponse;
+import bps.doohcar.dtos.locais.responses.Dia;
+import bps.doohcar.dtos.locais.responses.Local;
+import bps.doohcar.dtos.locais.responses.Nota;
 import bps.doohcar.dtos.tripadvisorapi.DetailDto;
 import bps.doohcar.repositories.redis.LocalRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
-import bps.doohcar.dtos.locais.Image;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/dooh-car/local")
@@ -50,6 +53,29 @@ public class LocaisController {
     private String photosUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/photos?language=pt&limit=5&offset=0&source=Management&key=%s";
  
     @GetMapping("/coleta")
+    @Operation(
+        summary = "API UTILIZADA PARA A COLETA DO TEMPO",
+        responses = {
+            @ApiResponse(
+                responseCode = "400",
+                content = @Content(
+                    schema = @Schema(implementation = ResponseObject.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                content = @Content(
+                    schema = @Schema(implementation = ResponseObject.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "200",
+                content = @Content(
+                    schema = @Schema(implementation = ColetaLocaisResponse.class)
+                )
+            )
+        }
+    )
     public ResponseEntity<Object> coletaRestaurantes(@RequestBody ColetaRestaurantesRequest request){
 
         ResponseEntity<Object> validate = request.validate();
