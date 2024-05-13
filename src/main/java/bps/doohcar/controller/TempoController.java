@@ -93,11 +93,24 @@ public class TempoController {
 
             Address address = restTemplate.getForObject(String.format(urlNominatim, request.latitude(), request.longitude()), Address.class);
 
-            TempoDto tempoDto = tempoRespository.collectCache(address.displayName());
+            TempoDto tempoDto = null;
 
             if(tempoDto == null){
 
-                tempoDto = restTemplate.getForObject(url, TempoDto.class);
+                System.out.println("Url: " + url);
+
+                try {
+
+                    tempoDto = restTemplate.getForObject(url, TempoDto.class);
+                    
+                } catch (Exception e) {
+
+                    return ResponseObject.error(
+                        "A api de tempo não encontrou nenhum local com esta lat/lng", 
+                        HttpStatus.NOT_FOUND
+                    );
+
+                }
 
                 tempoRespository.createCache(address.displayName(), tempoDto);
 
@@ -117,7 +130,8 @@ public class TempoController {
                             tempoDto.forecast().forecastday().get(0).dayDto().minTempC(), 
                             tempoDto.forecast().forecastday().get(0).dayDto().maxTempC(), 
                             hourDto.tempC(),
-                            hourDto.condition().descricao()
+                            hourDto.condition().descricao(),
+                            hourDto.condition().code()
                         )
                     );
 
