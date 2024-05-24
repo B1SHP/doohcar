@@ -93,8 +93,6 @@ public class TempoController {
 
             Address address = restTemplate.getForObject(String.format(urlNominatim, request.latitude(), request.longitude()), Address.class);
 
-            //aglo
-
             TempoDto tempoDto = tempoRespository.collectCache(address.displayName());
 
             if(tempoDto == null){
