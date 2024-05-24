@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public record Nota(
     @JsonProperty("geral") float notaGeral,
-    @JsonProperty("comidad") Float comida,
+    @JsonProperty("comida") Float comida,
     @JsonProperty("atendimento") Float atendimento,
     @JsonProperty("preco") Float preco
 ) {}
