@@ -10,12 +10,12 @@ import bps.doohcar.dtos.nominatim.Address;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
-
+import java.nio.charset.Charset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +48,7 @@ public class TempoController {
     private static final String urlNominatim = "https://nominatim.openstreetmap.org/reverse?lat=%s&lon=%s&format=json&zoom=10";
     private static final RestTemplate restTemplate = new RestTemplate();
 
-    @GetMapping("/coleta")
+    @PostMapping("/coleta")
     @Operation(
         summary = "API UTILIZADA PARA A COLETA DO TEMPO",
         responses = {
@@ -138,7 +138,7 @@ public class TempoController {
                 }
                 
             }
-
+  
             return ResponseObject.error(
                 "Não foi possivel encontrar a hora atual", 
                 HttpStatus.INTERNAL_SERVER_ERROR

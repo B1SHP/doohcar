@@ -1,10 +1,11 @@
 package bps.doohcar.controller;
 
 import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
-
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.nio.charset.Charset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -321,7 +322,9 @@ public class LocaisController {
 
         }
 
-        return ColetaLocaisResponse.success(locais);
+        ResponseEntity<Object> response = ColetaLocaisResponse.success(locais);
+
+        return response;
 
     }
     
