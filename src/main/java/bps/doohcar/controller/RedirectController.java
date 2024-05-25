@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import bps.doohcar.repositories.mysql.LocaisRepository;
 import bps.doohcar.repositories.mysql.PropagandaRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -28,6 +29,7 @@ public class RedirectController {
     private PropagandaRepository propagandaRepository;
 
     @GetMapping("/redireciona")
+    @Operation(summary = "API UTILIZADA PARA O REDIRECIONAMENTO DE URLS")
     public void redirect(HttpServletResponse response, @RequestParam(required = true) Boolean propaganda, @RequestParam(required = true) Long id ) throws IOException{
 
         String url = null;
