@@ -4,6 +4,7 @@ import bps.doohcar.dtos.locais.Image;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,6 +14,8 @@ public record Local(
 
     @JsonProperty("id") String id,
     @JsonProperty("nome") String nome,
+
+    @JsonIgnore
     @JsonProperty("url_site") String urlSite,
     @JsonProperty("telefone") String telefone,
     @JsonProperty("notas_quantidade") long numeroDeNotas,
