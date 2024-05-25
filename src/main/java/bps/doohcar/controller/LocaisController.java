@@ -3,7 +3,6 @@ package bps.doohcar.controller;
 import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v1/dooh-car/local")
@@ -69,15 +67,7 @@ public class LocaisController {
 
     private String locationUrl = "https://api.content.tripadvisor.com/api/v1/location/nearby_search?category=%s&radiusUnit=km&language=pt&radius=1000";
     private String detailsUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/details?language=pt&currency=BRL&key=%s";
-    private String photosUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/photos?language=pt&limit=5&offset=0&source=Management&key=%s";
-
-    @GetMapping("/redirect")
-    public void redirect(HttpServletResponse response) throws IOException{
-
-        String redirectUrl = "https://www.youtube.com/";
-        response.sendRedirect(redirectUrl);
-
-    }
+    private String photosUrl = "https://api.content.tripadvisor.com/api/v1/location/%s/photos?language=pt&limit=5&offset=0&source=Management&key=%s"; 
 
     @GetMapping("/popula")
     public ResponseEntity<Object> popula() throws JsonProcessingException{
