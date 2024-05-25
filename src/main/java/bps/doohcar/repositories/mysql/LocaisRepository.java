@@ -26,6 +26,31 @@ public class LocaisRepository {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    public String coletaUrl(long id){
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = String.format("""
+            SELECT 
+                url 
+            FROM 
+                place 
+            WHERE 
+                id = %s
+        """, id);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), String.class);
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return null;
+
+        }
+
+    }
+
     public List<Local> coletaLocais(ColetaLocaisRequest request){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
