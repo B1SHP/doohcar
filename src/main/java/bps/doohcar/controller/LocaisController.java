@@ -83,6 +83,8 @@ public class LocaisController {
 
         //japonesa, mexicana, churrasco, japones, batata, hamburger, italizana, pizza, macarrão
 
+//-25.43597202429948,-49.2685717154181
+
         do {
 
             try {
@@ -319,7 +321,9 @@ public class LocaisController {
 
         }
 
-        ResponseEntity<Object> response = ColetaLocaisResponse.success(locais);
+        long quantidade = locaisRepository.contaLocais(request);
+
+        ResponseEntity<Object> response = ColetaLocaisResponse.success(locais, quantidade);
 
         return response;
 

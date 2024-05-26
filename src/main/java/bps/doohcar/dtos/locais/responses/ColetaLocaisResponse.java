@@ -10,17 +10,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record ColetaLocaisResponse(
 
-    @JsonProperty("locais") List<Local> locais
+    @JsonProperty("locais") List<Local> locais,
+    @JsonProperty("quantidade") long quantidade
 
 ) {
 
-    public static ResponseEntity<Object> success(List<Local> locais){
+    public static ResponseEntity<Object> success(List<Local> locais, long quantidade){
 
         HttpHeaders headers = new HttpHeaders();
 
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
 
-        return new ResponseEntity<Object>(new ColetaLocaisResponse(locais), headers, HttpStatus.OK); 
+        return new ResponseEntity<Object>(new ColetaLocaisResponse(locais, quantidade), headers, HttpStatus.OK); 
 
     }
 
