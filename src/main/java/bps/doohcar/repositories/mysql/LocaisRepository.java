@@ -51,6 +51,35 @@ public class LocaisRepository {
 
     }
 
+    public long contaLocais(ColetaLocaisRequest request){
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = String.format("""
+            SELECT 
+                COUNT(id)
+            FROM 
+                place
+            WHERE 
+                %s
+        """, 
+            MysqlUtils.modificaColetaLocaisRequest(request)
+        );
+
+        System.out.println(sql);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return 0;
+
+        }
+
+    }
+
     public List<Local> coletaLocais(ColetaLocaisRequest request){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

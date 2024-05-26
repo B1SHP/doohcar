@@ -23,7 +23,7 @@ public abstract class MysqlUtils {
             for(String query : request.query()){
 
                 sb.append(" ( nome LIKE '%").append(query).append("%'\n");
-                sb.append(" OR JSON_CONTAINS(cozinha, '\"").append(query).append("\"')) OR");
+                sb.append(" OR JSON_SEARCH(cozinha, 'all', '%").append(query).append("')) OR");
 
             }
 
