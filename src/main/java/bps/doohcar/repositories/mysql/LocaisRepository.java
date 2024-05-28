@@ -66,8 +66,6 @@ public class LocaisRepository {
             MysqlUtils.modificaColetaLocaisRequest(request)
         );
 
-        System.out.println(sql);
-
         try {
 
             return jdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);

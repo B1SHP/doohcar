@@ -33,10 +33,10 @@ public class LocalRowmapper implements RowMapper<Local> {
 			    rs.getString("url"), 
 			    rs.getString("telefone"), 
 			    rs.getLong("notas_quantidade"), 
-			    objectMapper.readValue(nota, Nota.class), 
-			    objectMapper.readValue(dias, new TypeReference<ArrayList<Dia>>(){}), 
-			    objectMapper.readValue(fotos, new TypeReference<ArrayList<Image>>(){}), 
-			    objectMapper.readValue(cozinha, new TypeReference<ArrayList<String>>(){}),
+			    nota == null || nota.length() < 1 ? null : objectMapper.readValue(nota, Nota.class), 
+			    dias == null || dias.length() < 1 ? null : objectMapper.readValue(dias, new TypeReference<ArrayList<Dia>>(){}), 
+			    fotos == null || fotos.length() < 1 ? null : objectMapper.readValue(fotos, new TypeReference<ArrayList<Image>>(){}), 
+			    cozinha == null || cozinha.length() < 1 ? null : objectMapper.readValue(cozinha, new TypeReference<ArrayList<String>>(){}),
 			    rs.getInt("tipo")
 			);
 		} catch (Exception e) {
