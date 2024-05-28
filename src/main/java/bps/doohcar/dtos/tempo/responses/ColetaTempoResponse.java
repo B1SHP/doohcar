@@ -1,5 +1,6 @@
 package bps.doohcar.dtos.tempo.responses;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,10 +33,11 @@ public class ColetaTempoResponse extends ResponseObject {
 
     public static ResponseEntity<Object> success(String cidade, TemperaturaDto temperaturaDto){
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(new ColetaTempoResponse(cidade, temperaturaDto)
-        );
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
+
+        return new ResponseEntity<Object>(new ColetaTempoResponse(cidade, temperaturaDto), httpHeaders, HttpStatus.OK);
 
     }
 
