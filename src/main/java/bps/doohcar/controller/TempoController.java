@@ -8,14 +8,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import bps.doohcar.dtos.nominatim.Address;
 
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -38,6 +41,9 @@ import bps.doohcar.dtos.weatherapi.TempoDto;
 public class TempoController {
 
     @Value("${weather.api.key}")
+    private String weatherKey;
+
+    @Value("${key}")
     private String key;
 
     @Autowired
@@ -71,7 +77,13 @@ public class TempoController {
             )
         }
     )
-    public ResponseEntity<Object> coleta(@RequestBody ColetaTempoRequest request){
+    public ResponseEntity<Object> coleta(@RequestBody ColetaTempoRequest request, @RequestHeader("key") String key){
+
+        if(key == null || !Pattern.matches(this.key, key)){
+
+            return ResponseObject.error("Chave não autorizada ou null", HttpStatus.UNAUTHORIZED);
+
+        }
 
         ResponseEntity<Object> validate = request.validate();
 
@@ -96,8 +108,6 @@ public class TempoController {
 
             if(tempoDto == null){
 
-                System.out.println("Url: " + url);
-
                 try {
 
                     tempoDto = restTemplate.getForObject(url, TempoDto.class);
@@ -113,34 +123,28 @@ public class TempoController {
 
                 tempoRespository.createCache(address.displayName(), tempoDto);
 
-                System.out.println("No cache");
+            }
 
-            } else {System.out.println("Cache");}
-
-            int hora = LocalTime.now(ZoneId.of("America/Sao_Paulo")).getHour();
+            List<TemperaturaDto> temperaturas = new ArrayList<>();
 
             for (HourDto hourDto : tempoDto.forecast().forecastday().get(0).hours()) {
 
-                if(hora == hourDto.hour().getHour()){
-
-                    return ColetaTempoResponse.success(
-                        tempoDto.location().name(), 
-                        new TemperaturaDto(
-                            tempoDto.forecast().forecastday().get(0).dayDto().minTempC(), 
-                            tempoDto.forecast().forecastday().get(0).dayDto().maxTempC(), 
-                            hourDto.tempC(),
-                            hourDto.condition().descricao(),
-                            hourDto.condition().code()
-                        )
-                    );
-
-                }
+                temperaturas.add(
+                    new TemperaturaDto(
+                        hourDto.hour(),
+                        tempoDto.forecast().forecastday().get(0).dayDto().minTempC(), 
+                        tempoDto.forecast().forecastday().get(0).dayDto().maxTempC(), 
+                        hourDto.tempC(),
+                        hourDto.condition().descricao(),
+                        hourDto.condition().code()
+                    )
+                );
                 
             }
   
-            return ResponseObject.error(
-                "Não foi possivel encontrar a hora atual", 
-                HttpStatus.INTERNAL_SERVER_ERROR
+            return ColetaTempoResponse.success(
+                tempoDto.location().name(), 
+                temperaturas
             );
 
         } catch (JsonProcessingException e) {

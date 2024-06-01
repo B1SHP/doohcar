@@ -37,7 +37,8 @@ public class LocalRowmapper implements RowMapper<Local> {
 			    dias == null || dias.length() < 1 ? null : objectMapper.readValue(dias, new TypeReference<ArrayList<Dia>>(){}), 
 			    fotos == null || fotos.length() < 1 ? null : objectMapper.readValue(fotos, new TypeReference<ArrayList<Image>>(){}), 
 			    cozinha == null || cozinha.length() < 1 ? null : objectMapper.readValue(cozinha, new TypeReference<ArrayList<String>>(){}),
-			    rs.getInt("tipo")
+			    rs.getInt("tipo"),
+                rs.getLong("contagem")
 			);
 		} catch (Exception e) {
 
