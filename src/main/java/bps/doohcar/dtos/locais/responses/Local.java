@@ -30,6 +30,7 @@ public record Local(
     @JsonInclude(Include.NON_EMPTY)
     @JsonProperty("cozinha") ArrayList<String> cozinha,
 
-    @JsonProperty("tipo") int tipo
+    @JsonProperty("tipo") int tipo,
+    @JsonProperty("contagem") long contagem
 
 ) {}

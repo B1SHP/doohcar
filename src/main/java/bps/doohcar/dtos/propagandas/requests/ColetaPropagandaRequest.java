@@ -47,7 +47,7 @@ public record ColetaPropagandaRequest(
 
         }
 
-        return ResponseObject.error(message, HttpStatus.BAD_REQUEST);
+        return message == null ? null : ResponseObject.error(message, HttpStatus.BAD_REQUEST);
 
     }
 

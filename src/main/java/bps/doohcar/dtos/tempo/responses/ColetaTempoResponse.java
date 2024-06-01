@@ -1,5 +1,7 @@
 package bps.doohcar.dtos.tempo.responses;
 
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,9 @@ public class ColetaTempoResponse extends ResponseObject {
     private String cidade;
 
     @JsonProperty("temperatura") 
-    private TemperaturaDto temperaturaDto;
+    private List<TemperaturaDto> temperaturaDto;
 
-    private ColetaTempoResponse(String cidade, TemperaturaDto temperaturaDto){
+    private ColetaTempoResponse(String cidade, List<TemperaturaDto> temperaturaDto){
 
         this.cidade = cidade;
         this.temperaturaDto = temperaturaDto;
@@ -31,7 +33,7 @@ public class ColetaTempoResponse extends ResponseObject {
 
     }
 
-    public static ResponseEntity<Object> success(String cidade, TemperaturaDto temperaturaDto){
+    public static ResponseEntity<Object> success(String cidade, List<TemperaturaDto> temperaturaDto){
 
         HttpHeaders httpHeaders = new HttpHeaders();
 

@@ -26,6 +26,27 @@ public class LocaisRepository {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    public void aumentaContagem(long id){
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            UPDATE 
+                place 
+            SET 
+                contagem = contagem + 1
+            WHERE 
+                id = :id
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("id", id);
+
+        jdbcTemplate.update(sql, map);
+
+    }
+
     public String coletaUrl(long id){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -93,7 +114,8 @@ public class LocaisRepository {
                 dias,
                 fotos,
                 cozinha,
-                tipo
+                tipo,
+                contagem
             FROM 
                 place
             WHERE 

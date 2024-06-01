@@ -1,13 +1,17 @@
 package bps.doohcar.controller;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import bps.doohcar.enums.TipoUrl;
+import bps.doohcar.repositories.mysql.EventosRepository;
 import bps.doohcar.repositories.mysql.LocaisRepository;
 import bps.doohcar.repositories.mysql.PropagandaRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,23 +32,55 @@ public class RedirectController {
     @Autowired
     private PropagandaRepository propagandaRepository;
 
+    @Autowired
+    private EventosRepository eventoRepository;
+
+    @Value("${key}")
+    private String key;
+
     @GetMapping("/redireciona")
-    @Operation(summary = "API UTILIZADA PARA O REDIRECIONAMENTO DE URLS")
-    public void redirect(HttpServletResponse response, @RequestParam(required = true) Boolean propaganda, @RequestParam(required = true) Long id ) throws IOException{
+    @Operation(summary = "API UTILIZADA PARA O REDIRECIONAMENTO DE URLS", description = "Tipos: 1 -> Propaganda, 2 -> Locais, 3 -> Eventos")
+    public void redirect(HttpServletResponse response, @RequestParam(required = true) Integer tipo, @RequestParam(required = true) Long id, @RequestParam(required = true) String key, @RequestParam(required = false) String url, @RequestParam(required = false) String nome) throws IOException{
 
-        String url = null;
+        if(key == null || !Pattern.matches(this.key, key)){
 
-        if(propaganda){
-
-            url = propagandaRepository.coletaUrl(id); 
-
-        } else {
-
-            url = locaisRepository.coletaUrl(id);
+            return;
 
         }
 
-        response.sendRedirect(url);
+        String urlFinal = null;
+
+        if(TipoUrl.PROPAGANDA.key == tipo){
+
+            urlFinal = propagandaRepository.coletaUrl(id); 
+
+            propagandaRepository.aumentaContagem(id);
+
+        } else if(TipoUrl.LOCAL.key == tipo){
+
+            urlFinal = locaisRepository.coletaUrl(id);
+
+            locaisRepository.aumentaContagem(id);
+
+        } else if(TipoUrl.EVENTO.key == tipo){
+
+            long contagem = eventoRepository.coleta(id);
+
+            if(contagem == 0){
+
+                eventoRepository.cria(id, nome);
+
+            } else {
+
+                eventoRepository.aumentaContagem(id);
+
+            }
+
+            urlFinal = url;
+
+        }
+
+        response.sendRedirect(urlFinal);
 
     }
     

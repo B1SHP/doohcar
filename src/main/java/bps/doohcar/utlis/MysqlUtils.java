@@ -1,8 +1,41 @@
 package bps.doohcar.utlis;
 
 import bps.doohcar.dtos.locais.requests.ColetaLocaisRequest;
+import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 
 public abstract class MysqlUtils {
+
+    public static final String alteraPropaganda(AlteraPropagandaRequest request){
+
+        StringBuilder sb = new StringBuilder();
+
+        if(request.titulo() != null){
+
+            sb.append("titulo = '").append(request.titulo()).append("',\n");
+
+        } 
+
+        if(request.urlVideo() != null){
+
+            sb.append("url_video = '").append(request.urlVideo()).append("',\n");
+
+        } 
+
+        if(request.urlImagem() != null){
+
+            sb.append("url_imagem = '").append(request.urlImagem()).append("',\n");
+
+        } 
+
+        if(request.urlRedirecionamento() != null){
+
+            sb.append("url_redirecionamento = '").append(request.urlRedirecionamento()).append("'\n");
+
+        }
+
+        return sb.toString();
+
+    }
 
     public static final String modificaColetaLocaisRequest(ColetaLocaisRequest request){
 

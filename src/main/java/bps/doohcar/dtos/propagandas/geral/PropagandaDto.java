@@ -13,7 +13,8 @@ public record PropagandaDto(
     @JsonProperty("titulo") String titulo,
     @JsonProperty("url_video") String urlVideo,
     @JsonProperty("url_imagem") String urlImagem,
-    @JsonProperty("url_redirecionamento") String urlRedirecionamento
+    @JsonProperty("url_redirecionamento") String urlRedirecionamento,
+    @JsonProperty("contagem") long contagem
 
 ) {
 

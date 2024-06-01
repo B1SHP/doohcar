@@ -3,6 +3,8 @@ package bps.doohcar.controller;
 import static bps.doohcar.utlis.ChamadaUtils.chamadaLocation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -44,8 +47,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 )
 public class LocaisController {
 
-    @Value("${trip-advisor.api.key}")
+    @Value("${key}")
     private String key;
+
+    @Value("${trip-advisor.api.key}")
+    private String tripAdvisorKey;
 
     @Value("${inicio.latitude}")
     private double inicioLatitude;
@@ -110,14 +116,8 @@ public class LocaisController {
 
                         for(Local local : locais){
 
-                            Long id = locaisRepository.coleta(local.id());
-
-                            if(id == null){
-
-                                locaisRepository.adicionaLocais(local, 1);
-                                adicionados++;
-
-                            } else {System.out.println("Ja ta la");}
+                            locaisRepository.adicionaLocais(local, 1);
+                            adicionados++;
 
                         }
 
@@ -152,7 +152,7 @@ public class LocaisController {
                 "restaurants"
             ),
             DataLocation.class, 
-            "key", key,
+            "key", tripAdvisorKey,
             "latLong", (latitude + "," + longitude)
         );
 
@@ -160,29 +160,17 @@ public class LocaisController {
 
         for(Location location : data.getBody().locations()){
 
-            Local local = null;
-
-            try {
-
-				local = localRepository.collectCache(location.locationId());
-
-			} catch (JsonProcessingException e) {
-
-                System.out.println("Erro ao coletar a cache");
-
-			}
-
-            if(local == null){
+            if(locaisRepository.coleta(location.locationId()) == null){
 
                 ResponseEntity<DetailDto> responseEntityDetail = new RestTemplate().getForEntity(
-                    String.format(detailsUrl, location.locationId(), key), 
+                    String.format(detailsUrl, location.locationId(), tripAdvisorKey), 
                     DetailDto.class
                 );
 
-                System.out.println("Details: " + String.format(detailsUrl, location.locationId(), key));
+                System.out.println("Details: " + String.format(detailsUrl, location.locationId(), tripAdvisorKey));
 
                 ResponseEntity<DataPhotos> responseEntityDataPhotos = new RestTemplate().getForEntity(
-                    String.format(photosUrl, location.locationId(), key), 
+                    String.format(photosUrl, location.locationId(), tripAdvisorKey), 
                     DataPhotos.class
                 );
 
@@ -241,34 +229,25 @@ public class LocaisController {
 
                 }
 
-                local = new Local(
-                    location.locationId(), 
-                    detail.name(), 
-                    detail.webUrl(), 
-                    detail.phone(), 
-                    detail.numReviews(),
-                    nota, 
-                    dias, 
-                    fotos,
-                    cozinha,
-                    1
+                locais.add(
+                    new Local(
+                        location.locationId(), 
+                        detail.name(), 
+                        detail.webUrl(), 
+                        detail.phone(), 
+                        detail.numReviews(),
+                        nota, 
+                        dias, 
+                        fotos,
+                        cozinha,
+                        1,
+                        0
+                    )
                 );
 
-                try {
-
-					localRepository.createCache(location.locationId(), local);
-
-				} catch (JsonProcessingException e) {
-
-                    System.out.println("Erro ao criar cacher");
-
-				}
-
-                System.out.println("No cache which is sad asf");
-
-            } else {System.out.println("Cache yo");}
-
-            locais.add(local);
+            } else {
+                System.out.println("Old one");
+            }
 
         }
 
@@ -300,7 +279,13 @@ public class LocaisController {
             )
         }
     )
-    public ResponseEntity<Object> coletaRestaurantes(@RequestBody ColetaLocaisRequest request){
+    public ResponseEntity<Object> coletaRestaurantes(@RequestBody ColetaLocaisRequest request, @RequestHeader("key") String key){
+
+        if(key == null || !Pattern.matches(this.key, key)){
+
+            return ResponseObject.error("Chave não autorizada ou null", HttpStatus.UNAUTHORIZED);
+
+        }
 
         ResponseEntity<Object> validate= request.validate();
 
