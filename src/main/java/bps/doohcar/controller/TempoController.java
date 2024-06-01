@@ -97,7 +97,7 @@ public class TempoController {
 
             String url = String.format(
                 urlWeatherApi + "&key=%s&q=%s,%s", 
-                key,
+                weatherKey,
                 request.latitude(),
                 request.longitude()
             );
