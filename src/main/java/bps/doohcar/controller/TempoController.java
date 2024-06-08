@@ -136,7 +136,9 @@ public class TempoController {
                         tempoDto.forecast().forecastday().get(0).dayDto().maxTempC(), 
                         hourDto.tempC(),
                         hourDto.condition().descricao(),
-                        hourDto.condition().code()
+                        hourDto.condition().code(),
+                        hourDto.windKpm(),
+                        hourDto.humidity()
                     )
                 );
                 
@@ -144,7 +146,9 @@ public class TempoController {
   
             return ColetaTempoResponse.success(
                 tempoDto.location().name(), 
-                temperaturas
+                temperaturas,
+                tempoDto.forecast().forecastday().getFirst().astroDto().sunrise(),
+                tempoDto.forecast().forecastday().getFirst().astroDto().sunset()
             );
 
         } catch (JsonProcessingException e) {

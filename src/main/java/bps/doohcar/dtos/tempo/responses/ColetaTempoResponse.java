@@ -25,21 +25,39 @@ public class ColetaTempoResponse extends ResponseObject {
     @JsonProperty("temperatura") 
     private List<TemperaturaDto> temperaturaDto;
 
-    private ColetaTempoResponse(String cidade, List<TemperaturaDto> temperaturaDto){
+    @JsonProperty("nascer_do_sol")
+    private String nascerDoSol;
+
+    @JsonProperty("por_do_sol")
+    private String porDoSol;
+
+    private ColetaTempoResponse(String cidade, List<TemperaturaDto> temperaturaDto, String nascerDoSol, String porDoSol){
 
         this.cidade = cidade;
         this.temperaturaDto = temperaturaDto;
+        this.nascerDoSol = nascerDoSol;
+        this.porDoSol = porDoSol;
+        
         super.setSuccess("Tempo encontrado com sucesso");
 
     }
 
-    public static ResponseEntity<Object> success(String cidade, List<TemperaturaDto> temperaturaDto){
+    public static ResponseEntity<Object> success(String cidade, List<TemperaturaDto> temperaturaDto, String nascerDoSol, String porDoSol){
 
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
 
-        return new ResponseEntity<Object>(new ColetaTempoResponse(cidade, temperaturaDto), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<Object>(
+            new ColetaTempoResponse(
+                cidade, 
+                temperaturaDto, 
+                nascerDoSol, 
+                porDoSol
+            ), 
+            httpHeaders, 
+            HttpStatus.OK
+        );
 
     }
 

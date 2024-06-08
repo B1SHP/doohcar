@@ -15,7 +15,7 @@ public abstract class ChamadaUtils {
 
         }
 
-        System.out.println("Here: " + url);
+//        System.out.println("Here: " + url);
 
         return new RestTemplate().getForEntity(url, clazz);
 

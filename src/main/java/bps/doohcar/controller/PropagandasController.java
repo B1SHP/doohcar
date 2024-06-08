@@ -3,13 +3,11 @@ package bps.doohcar.controller;
 import bps.doohcar.dtos.propagandas.geral.PropagandaDto;
 import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 import bps.doohcar.dtos.propagandas.requests.ColetaPropagandaRequest;
-//import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 import bps.doohcar.dtos.propagandas.responses.ColetaPropagandaResponse;
 import bps.doohcar.dtos.propagandas.requests.ExcluiPropagandaRequest;
 
 import bps.doohcar.dtos.propagandas.requests.CriaPropagandaRequest;
 import bps.doohcar.dtos.propagandas.responses.CriaPropagandaResponse;
-import bps.doohcar.dtos.tempo.responses.ColetaTempoResponse;
 import bps.doohcar.dtos.ResponseObject;
 
 import java.util.ArrayList;
