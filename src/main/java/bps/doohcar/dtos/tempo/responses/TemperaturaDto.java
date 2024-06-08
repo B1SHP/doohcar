@@ -23,5 +23,7 @@ public record TemperaturaDto(
     @JsonProperty("maxima") float maxima,
     @JsonProperty("atual") float media,
     @JsonProperty("tempo") String tempo,
-    @JsonProperty("codigo") long codigo
+    @JsonProperty("codigo") long codigo,
+    @JsonProperty("velocidade_vento") float velocidadeVento,
+    @JsonProperty("umidade") int umidade
 ) {}

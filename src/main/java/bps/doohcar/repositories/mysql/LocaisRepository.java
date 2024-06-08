@@ -189,8 +189,6 @@ public class LocaisRepository {
         sql += tipo;
         sql += ");";
 
-        System.out.println(sql);
-
         jdbcTemplate.update(sql, new MapSqlParameterSource());
 
     }

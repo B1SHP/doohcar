@@ -40,7 +40,14 @@ public class RedirectController {
 
     @GetMapping("/redireciona")
     @Operation(summary = "API UTILIZADA PARA O REDIRECIONAMENTO DE URLS", description = "Tipos: 1 -> Propaganda, 2 -> Locais, 3 -> Eventos")
-    public void redirect(HttpServletResponse response, @RequestParam(required = true) Integer tipo, @RequestParam(required = true) Long id, @RequestParam(required = true) String key, @RequestParam(required = false) String url, @RequestParam(required = false) String nome) throws IOException{
+    public void redirect(
+        HttpServletResponse response, 
+        @RequestParam(required = true) Integer tipo, 
+        @RequestParam(required = true) Long id, 
+        @RequestParam(required = true) String key, 
+        @RequestParam(required = false) String url, 
+        @RequestParam(required = false) String nome
+        ) throws IOException{
 
         if(key == null || !Pattern.matches(this.key, key)){
 
