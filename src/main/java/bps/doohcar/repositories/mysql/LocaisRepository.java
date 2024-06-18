@@ -72,7 +72,7 @@ public class LocaisRepository {
 
     }
 
-    public long contaLocais(ColetaLocaisRequest request){
+    public long contaLocais(ColetaLocaisRequest request, int patrocinado){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -83,8 +83,10 @@ public class LocaisRepository {
                 place
             WHERE 
                 %s
+                AND patrocinado = %d
         """, 
-            MysqlUtils.modificaColetaLocaisRequest(request)
+            MysqlUtils.modificaColetaLocaisRequest(request),
+            patrocinado
         );
 
         try {
@@ -99,7 +101,7 @@ public class LocaisRepository {
 
     }
 
-    public List<Local> coletaLocais(ColetaLocaisRequest request){
+    public List<Local> coletaLocais(ColetaLocaisRequest request, int patrocinado){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -120,15 +122,15 @@ public class LocaisRepository {
                 place
             WHERE 
                 %s
+                AND patrocinado = %d
             LIMIT %d
             OFFSET %d
         """, 
             MysqlUtils.modificaColetaLocaisRequest(request),
+            patrocinado,
             request.limit(),
             request.offset()
         );
-
-        System.out.println(sql);
 
         try {
 
@@ -192,5 +194,66 @@ public class LocaisRepository {
         jdbcTemplate.update(sql, new MapSqlParameterSource());
 
     }
+
+	public void mudaPatrocinio(Long id, Integer patrocinado) {
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            UPDATE 
+                place 
+            SET 
+                patrocinado = :patrocinado
+            WHERE 
+                id = :id
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("patrocinado", patrocinado);
+        map.addValue("id", id);
+
+        jdbcTemplate.update(sql, map);
+
+	}
+
+	public Local coleta(Long id) {
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            SELECT 
+                id,
+                nome,
+                url,
+                telefone,
+                notas_quantidade,
+                nota,
+                dias,
+                fotos,
+                cozinha,
+                tipo,
+                contagem
+            FROM 
+                place
+            WHERE 
+                id = :id
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("id", id);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, map, new LocalRowmapper());
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return null;
+
+        }
+
+	}
     
 }
