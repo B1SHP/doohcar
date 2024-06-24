@@ -18,7 +18,8 @@ public class PropagandaRowmapper implements RowMapper<PropagandaDto>{
             rs.getString("url_video"), 
             rs.getString("url_imagem"), 
             rs.getString("url_redirecionamento"),
-            rs.getLong("contagem")
+            rs.getLong("contagem"),
+            rs.getInt("tela_de_display")
         );
 
 	}

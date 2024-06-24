@@ -5,31 +5,39 @@ import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 
 public abstract class MysqlUtils {
 
-    public static final String alteraPropaganda(AlteraPropagandaRequest request){
+    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem){
 
         StringBuilder sb = new StringBuilder();
 
-        if(request.titulo() != null){
+        boolean virgula = false;
 
-            sb.append("titulo = '").append(request.titulo()).append("',\n");
+        if(request.titulo() != null && request.titulo().length() > 1){
 
-        } 
+            sb.append("titulo = '").append(request.titulo()).append("'");
 
-        if(request.urlVideo() != null){
-
-            sb.append("url_video = '").append(request.urlVideo()).append("',\n");
+            virgula = true;
 
         } 
 
-        if(request.urlImagem() != null){
+        if(request.urlVideo() != null && request.urlVideo().length() > 1){
 
-            sb.append("url_imagem = '").append(request.urlImagem()).append("',\n");
+            sb.append(virgula ? ",\n" : "").append("url_video = '").append(request.urlVideo()).append("'");
+
+            virgula = true;
 
         } 
 
-        if(request.urlRedirecionamento() != null){
+        if(request.urlRedirecionamento() != null && request.urlRedirecionamento().length() > 1){
 
-            sb.append("url_redirecionamento = '").append(request.urlRedirecionamento()).append("'\n");
+            sb.append(virgula ? ",\n" : "").append("url_redirecionamento = '").append(request.urlRedirecionamento()).append("'");
+
+            virgula = true;
+
+        }
+
+        if(urlImagem != null && urlImagem.length() > 1){
+
+            sb.append(virgula ? ",\n" : "").append("url_imagem = '").append(urlImagem).append("'");
 
         }
 

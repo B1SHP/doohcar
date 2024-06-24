@@ -15,67 +15,118 @@ public class EventosRepository {
     private DataSource dataSource;
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void cria(long id, String nome){
+    public boolean verificaSeEPatrocinado(String idDisk){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
         String sql = String.format("""
-            INSERT INTO eventos(id, nome)
-            VALUES(%d, %s)
-        """, id, "'" + nome + "'");
-
-        jdbcTemplate.update(sql, new MapSqlParameterSource());
-
-    }
-
-    public Long coleta(long id){
-
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-
-        String sql = """
-            SELECT 
-                COUNT(id)
-            FROM 
-                eventos
-            WHERE 
-                id = :id
-        """;
-
-        MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("id", id);
+            SELECT COUNT(id)
+            FROM eventos
+            WHERE id = '%s'
+            AND patrocinado = 1
+        """, idDisk);
 
         try {
 
-            return jdbcTemplate.queryForObject(sql, map, Long.class);
+            Long quantidade = jdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+
+            if(quantidade == null || quantidade < 1){
+
+                return false;
+
+            }
+
+            return true;
             
         } catch (EmptyResultDataAccessException e) {
 
-            return 0l;
+            return false;
 
         }
 
     }
 
-    public void aumentaContagem(long id){
+    public boolean verificaSeOEventoJaExiste(String idDisk){
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
-        String sql = """
+        String sql = String.format("""
+            SELECT COUNT(id)
+            FROM eventos
+            WHERE id = '%s'
+        """, idDisk);
+
+        try {
+
+            Long quantidade = jdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+
+            if(quantidade == null || quantidade < 1){
+
+                return false;
+
+            }
+
+            return true;
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return false;
+
+        }
+
+    }
+
+    public void cria(String idDisk, String nome){
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String nomeLimpo = nome.replaceAll("'", "");
+
+        String sql = String.format("""
+            INSERT INTO eventos(id, nome)
+            VALUES('%s', '%s')
+        """, idDisk, nomeLimpo);
+
+        jdbcTemplate.update(sql, new MapSqlParameterSource());
+
+    } 
+
+    public void aumentaContagem(String id){
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = String.format("""
             UPDATE 
                 eventos
             SET 
                 contagem = contagem + 1
             WHERE 
-                id = :id
-        """;
+                id = '%s'
+        """, id);
 
         MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("id", id);
 
         jdbcTemplate.update(sql, map);
 
     }
+
+	public void alteraPatrocinio(String id, Integer patrocinado) {
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = String.format("""
+            UPDATE 
+                eventos
+            SET 
+                patrocinado = %d
+            WHERE 
+                id = '%s'
+        """, patrocinado, id);
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        jdbcTemplate.update(sql, map);
+
+	}
     
 }

@@ -29,9 +29,10 @@ public record AlteraPropagandaRequest(
     @JsonProperty("url_video") String urlVideo,
 
     @Schema(
+        description = "Imagem codificada em base 64",
         nullable = true
     )
-    @JsonProperty("url_imagem") String urlImagem,
+    @JsonProperty("imagem") String imagem,
 
     @Schema(
         nullable = true
@@ -50,7 +51,7 @@ public record AlteraPropagandaRequest(
 
         } 
 
-        if(titulo == null && urlVideo == null && urlImagem == null & urlRedirecionamento == null){
+        if(titulo == null && urlVideo == null && imagem == null & urlRedirecionamento == null){
 
             message = "Nenhum item foi adicionado ao corpo da request";
 

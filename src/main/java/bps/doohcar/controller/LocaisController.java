@@ -53,6 +53,12 @@ public class LocaisController {
                 )
             ),
             @ApiResponse(
+                responseCode = "401",
+                content = @Content(
+                    schema = @Schema(implementation = ResponseObject.class)
+                )
+            ),
+            @ApiResponse(
                 responseCode = "200",
                 content = @Content(
                     schema = @Schema(implementation = AlteraPatrocinioResponse.class)
@@ -68,7 +74,7 @@ public class LocaisController {
 
         }
 
-        ResponseEntity<Object> validate= request.validate();
+        ResponseEntity<Object> validate = request.validate();
 
         if(validate != null){
 
