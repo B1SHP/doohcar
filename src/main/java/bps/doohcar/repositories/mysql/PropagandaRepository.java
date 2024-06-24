@@ -72,18 +72,19 @@ public class PropagandaRepository {
 
     }
 
-	public Long criaPropagada(CriaPropagandaRequest request) {
+	public Long criaPropagada(CriaPropagandaRequest request, String urlImagem) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
         String sql = String.format("""
-            INSERT INTO propagandas(titulo, url_video, url_imagem, url_redirecionamento)
-            VALUES(%s, %s, %s, %s)
+            INSERT INTO propagandas(titulo, url_video, url_imagem, url_redirecionamento, tela_de_display)
+            VALUES(%s, %s, %s, %s, %d)
         """,
             ("'" + request.titulo() + "'"),
             ("'" + request.urlVideo() + "'"),
-            ("'" + request.urlImagem() + "'"),
-            ("'" + request.urlRedirecionamento() + "'")
+            ("'" + urlImagem + "'"),
+            ("'" + request.urlRedirecionamento() + "'"),
+            request.telaDeDisplay()
         );
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -113,7 +114,8 @@ public class PropagandaRepository {
                 url_video,
                 url_imagem,
                 url_redirecionamento,
-                contagem
+                contagem,
+                tela_de_display
             FROM 
                 propagandas
             WHERE 
@@ -148,7 +150,8 @@ public class PropagandaRepository {
                 url_video,
                 url_imagem,
                 url_redirecionamento,
-                contagem
+                contagem,
+                tela_de_display
             FROM 
                 propagandas
             WHERE 
@@ -224,7 +227,7 @@ public class PropagandaRepository {
 
 	}
 
-	public void alteraAnuncio(AlteraPropagandaRequest request) {
+	public void alteraAnuncio(AlteraPropagandaRequest request, String urlImagem) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -235,13 +238,55 @@ public class PropagandaRepository {
                 %s
             WHERE 
                 id = :id
-        """, MysqlUtils.alteraPropaganda(request));
+        """, MysqlUtils.alteraPropaganda(request, urlImagem));
 
         MapSqlParameterSource map = new MapSqlParameterSource();
+
+        System.out.println(sql);
 
         map.addValue("id", request.id());
 
         jdbcTemplate.update(sql, map);
+
+	}
+
+	public boolean verificaSeOLocalDaImagemEstaDisponivel(Integer telaDeDisplay) {
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            SELECT 
+                COUNT(id)
+            FROM 
+                propagandas
+            WHERE 
+                tela_de_display = :telaDeDisplay
+                AND excluido IS NULL
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("telaDeDisplay", telaDeDisplay);
+
+        try {
+
+            Integer numeroDeImagemsNaTelaEscolhida = jdbcTemplate.queryForObject(sql, map, Integer.class);
+
+            if(numeroDeImagemsNaTelaEscolhida == null || numeroDeImagemsNaTelaEscolhida > 0){
+
+                System.out.println("return");
+
+                return false;
+
+            };
+
+            return true;
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return false;
+
+        }
 
 	}
     

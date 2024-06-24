@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import bps.doohcar.repositories.mysql.PropagandaRepository;
+import bps.doohcar.utlis.ImagemUtils;
 
 @RestController
 @RequestMapping("/api/v1/dooh-car/propagandas")
@@ -46,6 +47,9 @@ public class PropagandasController {
 
     @Value("${key}")
     private String key;
+
+    @Value("${url.nginx}")
+    private String urlNginx;
 
     @PutMapping("/altera")
     @Operation(
@@ -87,6 +91,7 @@ public class PropagandasController {
 
         }
 
+
         PropagandaDto propagandaDto = propagandaRepository.coletaPropaganda(request.id());
 
         if(propagandaDto == null){
@@ -95,7 +100,15 @@ public class PropagandasController {
 
         }
 
-        propagandaRepository.alteraAnuncio(request);
+        String urlImagem = null;
+
+        if(request.imagem() != null){
+
+            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), request.titulo());
+
+        }
+
+        propagandaRepository.alteraAnuncio(request, urlImagem);
 
         return ResponseObject.success("Propaganda alterada com sucesso", HttpStatus.OK);
 
@@ -151,7 +164,7 @@ public class PropagandasController {
 
         propagandaRepository.excluiPropaganda(request.id());
 
-        return ResponseObject.success("Propaganda alterada com sucesso", HttpStatus.OK);
+        return ResponseObject.success("Propaganda deletada com sucesso", HttpStatus.OK);
 
     }
 
@@ -161,6 +174,18 @@ public class PropagandasController {
         responses = {
             @ApiResponse(
                 responseCode = "400",
+                content = @Content(
+                    schema = @Schema(implementation = ResponseObject.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "409",
+                content = @Content(
+                    schema = @Schema(implementation = ResponseObject.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "507",
                 content = @Content(
                     schema = @Schema(implementation = ResponseObject.class)
                 )
@@ -195,7 +220,23 @@ public class PropagandasController {
 
         }
 
-        Long id = propagandaRepository.criaPropagada(request);
+        boolean verificaSeOLocalDaImagemEstaDisponivel = propagandaRepository.verificaSeOLocalDaImagemEstaDisponivel(request.telaDeDisplay());
+
+        if(!verificaSeOLocalDaImagemEstaDisponivel){
+
+            return ResponseObject.error("Esta tela ja possui uma propaganda, coloque ela em outra tela ou remova a imagem existente", HttpStatus.CONFLICT);
+
+        }
+
+        String urlImagem = null;
+
+        if(request.imagem() != null){
+
+            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), request.titulo());
+
+        }
+
+        Long id = propagandaRepository.criaPropagada(request, urlImagem);
 
         if(id == null || id == 0){
 
