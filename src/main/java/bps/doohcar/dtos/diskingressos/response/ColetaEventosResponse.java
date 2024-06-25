@@ -6,13 +6,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record ColetaEventosResponse(
 
-    List<Evento> eventos 
+    List<Evento> patrocinados,
+    @JsonProperty("nao_patrocinados") List<Evento> naoPatrocinados
 
 ) {
 
-    public static ResponseEntity<Object> answer(List<Evento> eventos){
+    public static ResponseEntity<Object> answer(List<Evento> patrocinados, List<Evento> naoPatrocinados){
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -20,7 +23,7 @@ public record ColetaEventosResponse(
 
 
         return new ResponseEntity<Object>(
-            new ColetaEventosResponse(eventos),
+            new ColetaEventosResponse(patrocinados, naoPatrocinados),
             headers,
             HttpStatus.OK
         );

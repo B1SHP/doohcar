@@ -137,7 +137,8 @@ public class DiskIngressosController {
 
         } 
 
-        List<Evento> eventos = new ArrayList<>();
+        List<Evento> patrocinados = new ArrayList<>();
+        List<Evento> naoPatrocinados = new ArrayList<>();
 
         for(Hit hit : diskIngressoResponseEntity.getBody().hits().hits()){
 
@@ -176,21 +177,39 @@ public class DiskIngressosController {
 
             }
 
-            eventos.add(
-                new Evento(
-                    hit.id(), 
-                    source.date(), 
-                    source.eventName(), 
-                    patrocinado ? "https://api.diskingressos.com.br" + source.image() : null, 
-                    "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
-                    source.state(), 
-                    source.city()
-                )
+            if(patrocinado){
+
+                patrocinados.add(
+                    new Evento(
+                        hit.id(), 
+                        source.date(), 
+                        source.eventName(), 
+                        "https://api.diskingressos.com.br" + source.image(), 
+                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        source.state(), 
+                        source.city()
+                    )
                 );
+
+            } else {
+
+                naoPatrocinados.add(
+                    new Evento(
+                        hit.id(), 
+                        source.date(), 
+                        source.eventName(), 
+                        null, 
+                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        source.state(), 
+                        source.city()
+                    )
+                );
+
+            }
 
         }
 
-        return ColetaEventosResponse.answer(eventos);
+        return ColetaEventosResponse.answer(patrocinados, naoPatrocinados);
 
     }
 
