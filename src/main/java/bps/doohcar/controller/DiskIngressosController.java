@@ -126,8 +126,9 @@ public class DiskIngressosController {
 
         }
 
-        ResponseEntity<DiskIngressoResponse> diskIngressoResponseEntity = restTemplate.getForEntity(
+        ResponseEntity<DiskIngressoResponse> diskIngressoResponseEntity = restTemplate.postForEntity(
             "https://www.diskingressos.com.br/home/_search?size=1000&from=0", 
+            "{ \"aggs\": { \"filtered_state\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"state\": { \"terms\": { \"field\": \"state\" } } } }, \"city\": { \"terms\": { \"field\": \"city\", \"size\": 1000 } }, \"filtered_local\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"local\": { \"terms\": { \"field\": \"local\", \"size\": 1000 } } } }, \"filtered_classification\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"classification\": { \"terms\": { \"field\": \"classification\", \"size\": 1000 } } } } }, \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"query\": { \"filtered\": { \"query\": { \"match_all\": {} }, \"filter\": { \"bool\": { \"must\": [ { \"range\": { \"finalsale\": { \"gte\": \"now\" } } } ] } } } }, \"sort\": [ { \"data\": { \"order\": \"asc\" } } ] }",
             DiskIngressoResponse.class
         );
 
@@ -187,7 +188,8 @@ public class DiskIngressosController {
                         "https://api.diskingressos.com.br" + source.image(), 
                         "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
                         source.state(), 
-                        source.city()
+                        source.city(),
+                        source.local()
                     )
                 );
 
@@ -198,10 +200,11 @@ public class DiskIngressosController {
                         hit.id(), 
                         source.date(), 
                         source.eventName(), 
-                        null, 
+                        "https://api.diskingressos.com.br" + source.image(), 
                         "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
                         source.state(), 
-                        source.city()
+                        source.city(),
+                        source.local()
                     )
                 );
 

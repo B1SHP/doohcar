@@ -9,6 +9,7 @@ public record Source(
     String image,
     String state,
     String city,
-    @JsonAlias("groupid")Integer groupId
+    @JsonAlias("groupid")Integer groupId,
+    String local
 ) {
 }
