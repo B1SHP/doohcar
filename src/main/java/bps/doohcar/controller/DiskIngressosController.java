@@ -178,6 +178,8 @@ public class DiskIngressosController {
 
             }
 
+            String urlDisk = "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=" + hit.id() + "&key=" + key + "&url=" + url; 
+
             if(patrocinado){
 
                 patrocinados.add(
@@ -186,7 +188,7 @@ public class DiskIngressosController {
                         source.date(), 
                         source.eventName(), 
                         "https://api.diskingressos.com.br" + source.image(), 
-                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        urlDisk,
                         source.state(), 
                         source.city(),
                         source.local()
@@ -201,7 +203,7 @@ public class DiskIngressosController {
                         source.date(), 
                         source.eventName(), 
                         "https://api.diskingressos.com.br" + source.image(), 
-                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        urlDisk,
                         source.state(), 
                         source.city(),
                         source.local()
