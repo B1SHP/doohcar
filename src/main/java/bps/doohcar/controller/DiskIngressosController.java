@@ -126,8 +126,9 @@ public class DiskIngressosController {
 
         }
 
-        ResponseEntity<DiskIngressoResponse> diskIngressoResponseEntity = restTemplate.getForEntity(
+        ResponseEntity<DiskIngressoResponse> diskIngressoResponseEntity = restTemplate.postForEntity(
             "https://www.diskingressos.com.br/home/_search?size=1000&from=0", 
+            "{ \"aggs\": { \"filtered_state\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"state\": { \"terms\": { \"field\": \"state\" } } } }, \"city\": { \"terms\": { \"field\": \"city\", \"size\": 1000 } }, \"filtered_local\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"local\": { \"terms\": { \"field\": \"local\", \"size\": 1000 } } } }, \"filtered_classification\": { \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"aggs\": { \"classification\": { \"terms\": { \"field\": \"classification\", \"size\": 1000 } } } } }, \"filter\": { \"terms\": { \"city\": [ \"Curitiba\" ] } }, \"query\": { \"filtered\": { \"query\": { \"match_all\": {} }, \"filter\": { \"bool\": { \"must\": [ { \"range\": { \"finalsale\": { \"gte\": \"now\" } } } ] } } } }, \"sort\": [ { \"data\": { \"order\": \"asc\" } } ] }",
             DiskIngressoResponse.class
         );
 
@@ -177,6 +178,8 @@ public class DiskIngressosController {
 
             }
 
+            String urlDisk = "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=" + hit.id() + "&key=" + key + "&url=" + url; 
+
             if(patrocinado){
 
                 patrocinados.add(
@@ -185,9 +188,10 @@ public class DiskIngressosController {
                         source.date(), 
                         source.eventName(), 
                         "https://api.diskingressos.com.br" + source.image(), 
-                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        urlDisk,
                         source.state(), 
-                        source.city()
+                        source.city(),
+                        source.local()
                     )
                 );
 
@@ -198,10 +202,11 @@ public class DiskIngressosController {
                         hit.id(), 
                         source.date(), 
                         source.eventName(), 
-                        null, 
-                        "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=7446-E&key=0b897f31a0e4d1488a90f4996f4eecb4&url=" + url, 
+                        "https://api.diskingressos.com.br" + source.image(), 
+                        urlDisk,
                         source.state(), 
-                        source.city()
+                        source.city(),
+                        source.local()
                     )
                 );
 

@@ -12,7 +12,8 @@ public record Evento(
     String foto,
     String url,
     String estado,
-    String cidade
+    String cidade,
+    String local
 
 ) {
 }
