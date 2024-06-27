@@ -293,7 +293,7 @@ public class PropagandasController {
 
         if(request.id() != null){
 
-            PropagandaDto propagandaDto = propagandaRepository.coletaPropaganda(request.id());
+            PropagandaDto propagandaDto = propagandaRepository.coletaPropaganda(request.id(), key);
 
             if(propagandaDto != null){
 
@@ -304,7 +304,7 @@ public class PropagandasController {
         } else if(request.limit() != null && request.offset() != null){
 
             propagandas.addAll(
-                propagandaRepository.coletaPropagandas(request.limit(), request.offset())
+                propagandaRepository.coletaPropagandas(request.limit(), request.offset(), key)
             );
 
             quantidade = propagandaRepository.contaPropagandas();

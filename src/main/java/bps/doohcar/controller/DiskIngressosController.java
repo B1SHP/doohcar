@@ -217,6 +217,5 @@ public class DiskIngressosController {
         return ColetaEventosResponse.answer(patrocinados, naoPatrocinados);
 
     }
-
     
 }
