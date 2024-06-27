@@ -84,7 +84,7 @@ public class PropagandaRepository {
             ("'" + request.urlVideo() + "'"),
             ("'" + urlImagem + "'"),
             ("'" + request.urlRedirecionamento() + "'"),
-            request.telaDeDisplay()
+            request.telaDeDisplay() == null ? 0 : request.telaDeDisplay()
         );
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
