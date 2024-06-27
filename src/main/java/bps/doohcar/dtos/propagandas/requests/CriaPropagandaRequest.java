@@ -62,9 +62,15 @@ public record CriaPropagandaRequest(
 
             message = "A variavel 'tela_de_display' não foi adicionada";
 
-        } else if(telaDeDisplay < 1 || telaDeDisplay > 6){
+        } 
 
-            message = "A variavel 'tela_de_display' não pode ser menor do que 1 ou maior do que 6";
+        if(telaDeDisplay != null){
+
+            if(telaDeDisplay < 1 || telaDeDisplay > 6){
+
+                message = "A variavel 'tela_de_display' não pode ser menor do que 1 ou maior do que 6";
+
+            }
 
         }
 
