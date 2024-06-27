@@ -290,6 +290,42 @@ public class PropagandaRepository {
 
 	}
 
+    public PropagandaDto coletaPropagandaComTela(Integer id, String key) {
+
+		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            SELECT 
+                id,
+                titulo,
+                url_video,
+                url_imagem,
+                url_redirecionamento,
+                contagem,
+                tela_de_display
+            FROM 
+                propagandas
+            WHERE 
+                tela_de_display = :id
+                AND excluido IS NULL
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("id", id);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, map, new PropagandaRowmapper(key));
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return null;
+
+        }	
+
+    }
+
 	public PropagandaDto coletaPropaganda(Long id, String key) {
 
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

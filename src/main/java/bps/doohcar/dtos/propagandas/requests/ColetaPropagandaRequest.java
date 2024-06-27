@@ -25,7 +25,13 @@ public record ColetaPropagandaRequest(
     @Schema(
         nullable = true
     )
-    @JsonProperty("offset") Long offset
+    @JsonProperty("offset") Long offset,
+
+    @Schema(
+        nullable = true,
+        description = "1 -> sobre ; 2 -> tempo ; 3 -> espelho ; 4 -> inicial ; 5 -> restaurantes ; 6 -> disk"
+    )
+    @JsonProperty("tela") Integer tela
 
 ) {
 
@@ -33,7 +39,7 @@ public record ColetaPropagandaRequest(
 
         String message = null;
 
-        if(id == null && limit == null && offset == null){
+        if(id == null && limit == null && offset == null && tela == null){
 
             message = "Nenhuma variavel foi adicionada ao corpo da request";
 
