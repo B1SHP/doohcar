@@ -139,7 +139,7 @@ public class PropagandaRepository {
 		
     }
 
-	public List<PropagandaDto> coletaPropagandas(Long limit, Long offset) {
+	public List<PropagandaDto> coletaPropagandas(Long limit, Long offset, String key) {
 
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -169,7 +169,7 @@ public class PropagandaRepository {
 
         try {
 
-            return jdbcTemplate.query(sql, map, new PropagandaRowmapper());
+            return jdbcTemplate.query(sql, map, new PropagandaRowmapper(key));
             
         } catch (EmptyResultDataAccessException e) {
 
@@ -289,5 +289,41 @@ public class PropagandaRepository {
         }
 
 	}
+
+	public PropagandaDto coletaPropaganda(Long id, String key) {
+
+		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            SELECT 
+                id,
+                titulo,
+                url_video,
+                url_imagem,
+                url_redirecionamento,
+                contagem,
+                tela_de_display
+            FROM 
+                propagandas
+            WHERE 
+                id = :id
+                AND excluido IS NULL
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("id", id);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, map, new PropagandaRowmapper());
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return null;
+
+        }	
+
+    }
     
 }
