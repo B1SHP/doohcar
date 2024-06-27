@@ -20,7 +20,7 @@ public abstract class ImagemUtils {
 
             String cleanBase64 = imagem.replaceAll("data:image/png;base64,", "");
 
-            FileOutputStream fileOutputStream = new FileOutputStream("/home/bruno/Documents/Estudo/job?/dooh-car/pictures/" + novoNome + ".png");
+            FileOutputStream fileOutputStream = new FileOutputStream("/home/bruno/Documents/Estudo/job?/dooh-car/pictures/" + novoNome + "_" + LocalDateTime.now() + ".png");
 
             fileOutputStream.write(Base64.getDecoder().decode(cleanBase64));
 

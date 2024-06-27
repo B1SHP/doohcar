@@ -2,7 +2,7 @@ package bps.doohcar.dtos.propagandas.responses;
 
 import bps.doohcar.dtos.propagandas.geral.PropagandaDto;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonInclude(Include.NON_NULL)
 public record ColetaPropagandaResponse(
 
-    @JsonProperty("propagandas") List<PropagandaDto> propagandas,
+    @JsonProperty("propagandas") Map<Integer, PropagandaDto> propagandas,
     @JsonProperty("quantidade") Long quantidade
 
 ) {
 
-    public static ResponseEntity<Object> answer(List<PropagandaDto> propagandas, Long quantidade){
+    public static ResponseEntity<Object> answer(Map<Integer, PropagandaDto> propagandas, Long quantidade){
 
         return ResponseEntity
             .status(HttpStatus.OK)

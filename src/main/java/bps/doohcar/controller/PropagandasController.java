@@ -11,7 +11,9 @@ import bps.doohcar.dtos.propagandas.responses.CriaPropagandaResponse;
 import bps.doohcar.dtos.ResponseObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -288,36 +290,46 @@ public class PropagandasController {
 
         }
 
-        List<PropagandaDto> propagandas = new ArrayList<>();
-        Long quantidade = null;
+        Map<Integer, PropagandaDto> map = new HashMap<>();
+        Long quantidade = 0l;
 
         if(request.id() != null){
 
             PropagandaDto propagandaDto = propagandaRepository.coletaPropaganda(request.id(), key);
 
-            if(propagandaDto != null){
+            map.put(propagandaDto.telaDeDisplay(), propagandaDto);
 
-                propagandas.add(propagandaDto);
+            quantidade = 1l;
 
-            }
+        } else if(request.tela() != null){
+
+            PropagandaDto propagandaDto = propagandaRepository.coletaPropagandaComTela(request.tela(), key);
+
+            map.put(propagandaDto.telaDeDisplay(), propagandaDto);
+
+            quantidade = 1l;
 
         } else if(request.limit() != null && request.offset() != null){
 
-            propagandas.addAll(
-                propagandaRepository.coletaPropagandas(request.limit(), request.offset(), key)
-            );
+            List<PropagandaDto> propagandas = propagandaRepository.coletaPropagandas(request.limit(), request.offset(), key);
 
             quantidade = propagandaRepository.contaPropagandas();
 
+            for(PropagandaDto propagandaDto : propagandas){
+
+                map.put(propagandaDto.telaDeDisplay(), propagandaDto);
+
+            }
+
         }
 
-        if(propagandas.size() == 0){
+        if(quantidade == 0){
 
             return ResponseObject.error("Nenhuma propaganda encontrada", HttpStatus.NOT_FOUND);
 
         }
 
-        return ColetaPropagandaResponse.answer(propagandas, quantidade);
+        return ColetaPropagandaResponse.answer(map, quantidade);
 
     }
     
