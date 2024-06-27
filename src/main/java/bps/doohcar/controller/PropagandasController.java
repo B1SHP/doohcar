@@ -222,11 +222,15 @@ public class PropagandasController {
 
         }
 
-        boolean verificaSeOLocalDaImagemEstaDisponivel = propagandaRepository.verificaSeOLocalDaImagemEstaDisponivel(request.telaDeDisplay());
+        if(request.imagem() != null){
 
-        if(!verificaSeOLocalDaImagemEstaDisponivel){
+            boolean verificaSeOLocalDaImagemEstaDisponivel = propagandaRepository.verificaSeOLocalDaImagemEstaDisponivel(request.telaDeDisplay());
 
-            return ResponseObject.error("Esta tela ja possui uma propaganda, coloque ela em outra tela ou remova a imagem existente", HttpStatus.CONFLICT);
+            if(!verificaSeOLocalDaImagemEstaDisponivel){
+
+                return ResponseObject.error("Esta tela ja possui uma propaganda, coloque ela em outra tela ou remova a imagem existente", HttpStatus.CONFLICT);
+
+            }
 
         }
 
