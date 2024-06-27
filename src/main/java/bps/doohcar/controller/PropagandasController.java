@@ -295,7 +295,7 @@ public class PropagandasController {
         }
 
         Map<Integer, PropagandaDto> map = new HashMap<>();
-        Long quantidade = 0l;
+        List<PropagandaDto> videos = new ArrayList<>();
 
         if(request.id() != null){
 
@@ -303,37 +303,39 @@ public class PropagandasController {
 
             map.put(propagandaDto.telaDeDisplay(), propagandaDto);
 
-            quantidade = 1l;
-
         } else if(request.tela() != null){
 
             PropagandaDto propagandaDto = propagandaRepository.coletaPropagandaComTela(request.tela(), key);
 
             map.put(propagandaDto.telaDeDisplay(), propagandaDto);
 
-            quantidade = 1l;
-
         } else if(request.limit() != null && request.offset() != null){
 
             List<PropagandaDto> propagandas = propagandaRepository.coletaPropagandas(request.limit(), request.offset(), key);
 
-            quantidade = propagandaRepository.contaPropagandas();
-
             for(PropagandaDto propagandaDto : propagandas){
 
-                map.put(propagandaDto.telaDeDisplay(), propagandaDto);
+                if(propagandaDto.telaDeDisplay() == 0){
+
+                    videos.add(propagandaDto);
+
+                } else {
+
+                    map.put(propagandaDto.telaDeDisplay(), propagandaDto);
+
+                }
 
             }
 
         }
 
-        if(quantidade == 0){
+        if((map == null || map.size() < 1) && (videos == null || videos.size() < 1)){
 
             return ResponseObject.error("Nenhuma propaganda encontrada", HttpStatus.NOT_FOUND);
 
         }
 
-        return ColetaPropagandaResponse.answer(map, quantidade);
+        return ColetaPropagandaResponse.answer(map, videos);
 
     }
     
