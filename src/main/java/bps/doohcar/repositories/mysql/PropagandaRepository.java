@@ -316,7 +316,7 @@ public class PropagandaRepository {
 
         try {
 
-            return jdbcTemplate.queryForObject(sql, map, new PropagandaRowmapper());
+            return jdbcTemplate.queryForObject(sql, map, new PropagandaRowmapper(key));
             
         } catch (EmptyResultDataAccessException e) {
 
