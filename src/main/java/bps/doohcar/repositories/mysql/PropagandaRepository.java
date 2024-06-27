@@ -72,7 +72,7 @@ public class PropagandaRepository {
 
     }
 
-	public Long criaPropagada(CriaPropagandaRequest request, String urlImagem) {
+	public Long criaPropagada(CriaPropagandaRequest request, String urlImagem, String urlVideo) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -81,7 +81,7 @@ public class PropagandaRepository {
             VALUES(%s, %s, %s, %s, %d)
         """,
             ("'" + request.titulo() + "'"),
-            ("'" + request.urlVideo() + "'"),
+            ("'" + urlVideo + "'"),
             ("'" + urlImagem + "'"),
             ("'" + request.urlRedirecionamento() + "'"),
             request.telaDeDisplay() == null ? 0 : request.telaDeDisplay()

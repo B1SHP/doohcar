@@ -242,7 +242,15 @@ public class PropagandasController {
 
         }
 
-        Long id = propagandaRepository.criaPropagada(request, urlImagem);
+        String urlVideo = null;
+
+        if(request.urlVideo() != null){
+
+            urlVideo = "https://drive.google.com/uc?export=download&id=" + request.urlVideo().split("/")[5];
+
+        }
+
+        Long id = propagandaRepository.criaPropagada(request, urlImagem, urlVideo);
 
         if(id == null || id == 0){
 
