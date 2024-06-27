@@ -58,7 +58,7 @@ public record CriaPropagandaRequest(
 
             message = "A variavel 'url_redirecionamento' não pode ser null";
 
-        } else if(telaDeDisplay == null){
+        } else if(telaDeDisplay == null && imagem != null){
 
             message = "A variavel 'tela_de_display' não foi adicionada";
 
