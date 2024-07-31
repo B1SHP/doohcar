@@ -1,8 +1,6 @@
 package bps.doohcar.utlis;
 
 import java.io.FileOutputStream;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Base64;
 
 public abstract class ImagemUtils {
@@ -17,21 +15,15 @@ public abstract class ImagemUtils {
 
             }
 
-            String novoNome = nome == null || nome.length() < 1 ? 
-                LocalDateTime.now(ZoneOffset.UTC).toString() 
-                : 
-                nome + "_" + LocalDateTime.now(ZoneOffset.UTC).toString()
-            ;
-
             String cleanBase64 = imagem.replaceAll("data:image/png;base64,", "");
 
-            FileOutputStream fileOutputStream = new FileOutputStream("/pictures/" + novoNome + ".png");
+            FileOutputStream fileOutputStream = new FileOutputStream("/pictures/" + nome + ".png");
 
             fileOutputStream.write(Base64.getDecoder().decode(cleanBase64));
 
             fileOutputStream.close();
 
-            return urlNginx + novoNome + ".png";
+            return urlNginx + nome + ".png";
 
         } catch (Exception e) {
 

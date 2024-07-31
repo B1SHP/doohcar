@@ -5,21 +5,21 @@ import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 
 public abstract class MysqlUtils {
 
-    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem, String urlVideo){
+    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem, String urlVideo, String nome){
 
         StringBuilder sb = new StringBuilder();
 
         boolean virgula = false;
 
-        if(request.titulo() != null && request.titulo().length() > 1){
+        if(nome != null && nome.length() > 0){
 
-            sb.append("titulo = '").append(request.titulo()).append("'");
+            sb.append("titulo = '").append(nome).append("'");
 
             virgula = true;
 
         } 
 
-        if(urlVideo != null && urlVideo.length() > 1){
+        if(urlVideo != null && urlVideo.length() > 0){
 
             sb.append(virgula ? ",\n" : "").append("url_video = '").append(urlVideo).append("'");
 
@@ -27,7 +27,7 @@ public abstract class MysqlUtils {
 
         } 
 
-        if(request.urlRedirecionamento() != null && request.urlRedirecionamento().length() > 1){
+        if(request.urlRedirecionamento() != null && request.urlRedirecionamento().length() > 0){
 
             sb.append(virgula ? ",\n" : "").append("url_redirecionamento = '").append(request.urlRedirecionamento()).append("'");
 
@@ -35,7 +35,7 @@ public abstract class MysqlUtils {
 
         }
 
-        if(urlImagem != null && urlImagem.length() > 1){
+        if(urlImagem != null && urlImagem.length() > 0){
 
             sb.append(virgula ? ",\n" : "").append("url_imagem = '").append(urlImagem).append("'");
 

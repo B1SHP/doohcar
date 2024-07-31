@@ -10,6 +10,8 @@ import bps.doohcar.dtos.propagandas.requests.CriaPropagandaRequest;
 import bps.doohcar.dtos.propagandas.responses.CriaPropagandaResponse;
 import bps.doohcar.dtos.ResponseObject;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,11 +104,17 @@ public class PropagandasController {
 
         }
 
+        String nome = request.titulo() == null ? 
+            LocalDateTime.now(ZoneOffset.UTC).toString()
+            :
+            request.titulo() + "_" + LocalDateTime.now(ZoneOffset.UTC)
+        ;
+
         String urlImagem = null;
 
         if(request.imagem() != null){
 
-            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), request.titulo());
+            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), nome);
 
         }
 
@@ -118,7 +126,7 @@ public class PropagandasController {
 
         }
 
-        propagandaRepository.alteraAnuncio(request, urlImagem, urlVideo);
+        propagandaRepository.alteraAnuncio(request, urlImagem, urlVideo, nome);
 
         return ResponseObject.success("Propaganda alterada com sucesso", HttpStatus.OK);
 
@@ -242,11 +250,17 @@ public class PropagandasController {
 
         }
 
+        String nome = request.titulo() == null ? 
+            LocalDateTime.now(ZoneOffset.UTC).toString()
+            :
+            request.titulo() + "_" + LocalDateTime.now(ZoneOffset.UTC)
+        ;
+
         String urlImagem = null;
 
         if(request.imagem() != null){
 
-            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), request.titulo());
+            urlImagem = ImagemUtils.criaImagem(urlNginx, request.imagem(), nome);
 
         }
 
@@ -258,7 +272,7 @@ public class PropagandasController {
 
         }
 
-        Long id = propagandaRepository.criaPropagada(request, urlImagem, urlVideo);
+        Long id = propagandaRepository.criaPropagada(request, urlImagem, urlVideo, nome);
 
         if(id == null || id == 0){
 
