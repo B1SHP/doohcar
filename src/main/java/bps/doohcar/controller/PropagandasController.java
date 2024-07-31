@@ -126,7 +126,7 @@ public class PropagandasController {
 
         }
 
-        propagandaRepository.alteraAnuncio(request, urlImagem, urlVideo, nome);
+        propagandaRepository.alteraAnuncio(request, urlImagem, urlVideo);
 
         return ResponseObject.success("Propaganda alterada com sucesso", HttpStatus.OK);
 
@@ -272,7 +272,7 @@ public class PropagandasController {
 
         }
 
-        Long id = propagandaRepository.criaPropagada(request, urlImagem, urlVideo, nome);
+        Long id = propagandaRepository.criaPropagada(request, urlImagem, urlVideo);
 
         if(id == null || id == 0){
 
