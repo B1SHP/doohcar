@@ -110,7 +110,15 @@ public class PropagandasController {
 
         }
 
-        propagandaRepository.alteraAnuncio(request, urlImagem);
+        String urlVideo = null;
+
+        if(request.urlVideo() != null){
+
+            urlVideo = "https://drive.google.com/uc?export=download&id=" + request.urlVideo().split("/")[5];
+
+        }
+
+        propagandaRepository.alteraAnuncio(request, urlImagem, urlVideo);
 
         return ResponseObject.success("Propaganda alterada com sucesso", HttpStatus.OK);
 

@@ -5,7 +5,7 @@ import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 
 public abstract class MysqlUtils {
 
-    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem){
+    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem, String urlVideo){
 
         StringBuilder sb = new StringBuilder();
 
@@ -19,9 +19,9 @@ public abstract class MysqlUtils {
 
         } 
 
-        if(request.urlVideo() != null && request.urlVideo().length() > 1){
+        if(urlVideo != null && urlVideo.length() > 1){
 
-            sb.append(virgula ? ",\n" : "").append("url_video = '").append(request.urlVideo()).append("'");
+            sb.append(virgula ? ",\n" : "").append("url_video = '").append(urlVideo).append("'");
 
             virgula = true;
 
