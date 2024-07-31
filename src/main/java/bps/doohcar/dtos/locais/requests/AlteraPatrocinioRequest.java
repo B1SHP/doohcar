@@ -16,7 +16,7 @@ public record AlteraPatrocinioRequest(
     List<Long> ids,
 
     @Schema(
-        description = "1 -> Aprovado, 2 -> Não Aprovado"
+        description = "0 -> Não patrocinado, 1 -> Patrocinado"
     )
     Integer aprovacao
 
