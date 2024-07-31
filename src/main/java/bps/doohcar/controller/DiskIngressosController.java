@@ -164,6 +164,7 @@ public class DiskIngressosController {
             }
 
             boolean patrocinado = false;
+            long contagem = 0;
 
             if(!eventosRepository.verificaSeOEventoJaExiste(hit.id())){
 
@@ -175,6 +176,7 @@ public class DiskIngressosController {
             } else {
 
                 patrocinado = eventosRepository.verificaSeEPatrocinado(hit.id());
+                contagem = eventosRepository.coletaNumeroDeChamadas(hit.id());
 
             }
 
@@ -191,7 +193,8 @@ public class DiskIngressosController {
                         urlDisk,
                         source.state(), 
                         source.city(),
-                        source.local()
+                        source.local(),
+                        contagem
                     )
                 );
 
@@ -206,7 +209,8 @@ public class DiskIngressosController {
                         urlDisk,
                         source.state(), 
                         source.city(),
-                        source.local()
+                        source.local(),
+                        contagem
                     )
                 );
 
