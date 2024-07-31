@@ -70,9 +70,9 @@ public class RedirectController {
 
         } else if(TipoUrl.EVENTO.key == tipo){
 
-            eventoRepository.aumentaContagem("" + id);
-
             urlFinal = url;
+
+            eventoRepository.aumentaContagem("" + id);
 
         }
 

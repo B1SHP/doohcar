@@ -81,8 +81,8 @@ public class PropagandaRepository {
             VALUES(%s, %s, %s, %s, %d)
         """,
             ("'" + request.titulo() + "'"),
-            ("'" + urlVideo + "'"),
-            ("'" + urlImagem + "'"),
+            urlVideo == null ? null : ("'" + urlVideo + "'"),
+            urlImagem == null ? null : ("'" + urlImagem + "'"),
             ("'" + request.urlRedirecionamento() + "'"),
             request.telaDeDisplay() == null ? 0 : request.telaDeDisplay()
         );

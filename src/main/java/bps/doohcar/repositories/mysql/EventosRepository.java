@@ -128,5 +128,34 @@ public class EventosRepository {
         jdbcTemplate.update(sql, map);
 
 	}
+
+	public long coletaNumeroDeChamadas(String id) {
+
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+
+        String sql = """
+            SELECT 
+                contagem 
+            FROM 
+                eventos 
+            WHERE
+                id = :id
+        """;
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        map.addValue("id", id);
+
+        try {
+
+            return jdbcTemplate.queryForObject(sql, map, Long.class);
+            
+        } catch (EmptyResultDataAccessException e) {
+
+            return 0;
+
+        }
+
+	}
     
 }

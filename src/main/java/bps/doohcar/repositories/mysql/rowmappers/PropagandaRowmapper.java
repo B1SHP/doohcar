@@ -28,7 +28,7 @@ public class PropagandaRowmapper implements RowMapper<PropagandaDto>{
 
         if(key != null){
 
-            urlRedirecionamento = "http://54.207.32.232:8080/api/v1/dooh-car/redirect/redireciona?tipo=1&id=" + id + "&key=" + key; 
+            urlRedirecionamento = "http://api.doohmob.com.br:8080/api/v1/dooh-car/redirect/redireciona?tipo=1&id=" + id + "&key=" + key; 
 
         }
 
