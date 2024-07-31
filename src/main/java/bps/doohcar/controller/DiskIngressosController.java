@@ -180,7 +180,7 @@ public class DiskIngressosController {
 
             }
 
-            String urlDisk = "http://localhost:7000/api/v1/dooh-car/redirect/redireciona?tipo=3&id=" + hit.id() + "&key=" + key + "&url=" + url; 
+            String urlDisk = "http://api.doohmob.com.br:8080/api/v1/dooh-car/redirect/redireciona?tipo=3&id=" + hit.id() + "&key=" + key + "&url=" + url; 
 
             if(patrocinado){
 
