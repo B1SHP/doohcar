@@ -227,7 +227,7 @@ public class PropagandaRepository {
 
 	}
 
-	public void alteraAnuncio(AlteraPropagandaRequest request, String urlImagem) {
+	public void alteraAnuncio(AlteraPropagandaRequest request, String urlImagem, String urlVideo) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -238,7 +238,7 @@ public class PropagandaRepository {
                 %s
             WHERE 
                 id = :id
-        """, MysqlUtils.alteraPropaganda(request, urlImagem));
+        """, MysqlUtils.alteraPropaganda(request, urlImagem, urlVideo));
 
         MapSqlParameterSource map = new MapSqlParameterSource();
 
