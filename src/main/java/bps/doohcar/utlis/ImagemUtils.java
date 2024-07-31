@@ -2,6 +2,7 @@ package bps.doohcar.utlis;
 
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
 
 public abstract class ImagemUtils {
@@ -16,7 +17,11 @@ public abstract class ImagemUtils {
 
             }
 
-            String novoNome = nome == null || nome.length() < 1 ? LocalDateTime.now().toString() : nome;
+            String novoNome = nome == null || nome.length() < 1 ? 
+                LocalDateTime.now(ZoneOffset.UTC).toString() 
+                : 
+                nome + "_" + LocalDateTime.now(ZoneOffset.UTC).toString()
+            ;
 
             String cleanBase64 = imagem.replaceAll("data:image/png;base64,", "");
 
