@@ -5,15 +5,15 @@ import bps.doohcar.dtos.propagandas.requests.AlteraPropagandaRequest;
 
 public abstract class MysqlUtils {
 
-    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem, String urlVideo, String nome){
+    public static final String alteraPropaganda(AlteraPropagandaRequest request, String urlImagem, String urlVideo){
 
         StringBuilder sb = new StringBuilder();
 
         boolean virgula = false;
 
-        if(nome != null && nome.length() > 0){
+        if(request.titulo() != null && request.titulo().length() > 0){
 
-            sb.append("titulo = '").append(nome).append("'");
+            sb.append("titulo = '").append(request.titulo()).append("'");
 
             virgula = true;
 

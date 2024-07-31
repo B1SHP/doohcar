@@ -72,7 +72,7 @@ public class PropagandaRepository {
 
     }
 
-	public Long criaPropagada(CriaPropagandaRequest request, String urlImagem, String urlVideo, String nome) {
+	public Long criaPropagada(CriaPropagandaRequest request, String urlImagem, String urlVideo) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -80,7 +80,7 @@ public class PropagandaRepository {
             INSERT INTO propagandas(titulo, url_video, url_imagem, url_redirecionamento, tela_de_display)
             VALUES(%s, %s, %s, %s, %d)
         """,
-            ("'" + nome + "'"),
+            ("'" + request.titulo() + "'"),
             urlVideo == null ? null : ("'" + urlVideo + "'"),
             urlImagem == null ? null : ("'" + urlImagem + "'"),
             ("'" + request.urlRedirecionamento() + "'"),
@@ -227,7 +227,7 @@ public class PropagandaRepository {
 
 	}
 
-	public void alteraAnuncio(AlteraPropagandaRequest request, String urlImagem, String urlVideo, String nome) {
+	public void alteraAnuncio(AlteraPropagandaRequest request, String urlImagem, String urlVideo) {
 
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -238,7 +238,7 @@ public class PropagandaRepository {
                 %s
             WHERE 
                 id = :id
-        """, MysqlUtils.alteraPropaganda(request, urlImagem, urlVideo, nome));
+        """, MysqlUtils.alteraPropaganda(request, urlImagem, urlVideo));
 
         MapSqlParameterSource map = new MapSqlParameterSource();
 
